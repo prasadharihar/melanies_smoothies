@@ -2,12 +2,11 @@
 import streamlit as st
 from snowflake.snowpark.functions import col  # Import col function
 import requests
-if ingredients_list:
-    ingredients_string = ''
-    for fruit_chosen in ingredients_list:
-        ingredients_string += fruit_chosen +' '
-        fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-        fv_df =st.dataframe(data=fruityvice_response.json(), use_container_width=True)
+# if ingredients_list:
+#     ingredients_string = ''
+    # for fruit_chosen in ingredients_list:
+    #     ingredients_string += fruit_chosen +' '
+    #     
 st.text(fruityvice_response)
 # Write directly to the app
 st.title(":cup_with_straw: Customize Your Smoothie!:cup_with_straw: ")
@@ -42,8 +41,11 @@ ingredients_string = ""  # Initialize ingredients_string
 if ingredients_list :
  
  
- for fruit_chosen in ingredients_list: 
-   ingredients_string += fruit_chosen + ' '
+    for fruit_chosen in ingredients_list: 
+        ingredients_string += fruit_chosen + ' '
+        fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
+        fv_df =st.dataframe(data=fruityvice_response.json(), use_container_width=True)
+     
  # st.write(ingredients_string)
     
  

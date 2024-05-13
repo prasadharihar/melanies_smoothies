@@ -1,6 +1,11 @@
 # Import python packages
 import streamlit as st
 from snowflake.snowpark.functions import col  # Import col function
+import requests
+
+
+fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
+st.text(fruityvice_response.json())
 
 
 
@@ -59,11 +64,7 @@ my_insert_stmt = """ INSERT INTO smoothies.public.orders(ingredients,name_on_ord
 time_to_insert =st.button('Submit Order')
 session.sql(my_insert_stmt).collect()
 st.success('Your Smoothie is ordered!', icon="✅")
-import requests
 
-
-fruityvice_response = requests.get("https://fruityvice.com/api/fruit/watermelon")
-st.text(fruityvice_response.json())
 
 
 

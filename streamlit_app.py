@@ -74,7 +74,7 @@
 # session.sql(my_insert_stmt).collect()
 # st.success('Your Smoothie is ordered!', icon="✅")
 
-------new  code----
+
 import streamlit as st
 from snowflake.snowpark.functions import col
 import requests

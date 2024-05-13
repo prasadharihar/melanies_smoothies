@@ -1,12 +1,7 @@
 # Import python packages
 import streamlit as st
 from snowflake.snowpark.functions import col  # Import col function
-import requests
-# if ingredients_list:
-#     ingredients_string = ''
-    # for fruit_chosen in ingredients_list:
-    #     ingredients_string += fruit_chosen +' '
-    #     
+import requests    
 st.text(fruityvice_response)
 # Write directly to the app
 st.title(":cup_with_straw: Customize Your Smoothie!:cup_with_straw: ")
@@ -38,8 +33,9 @@ ingredients_list =st.multiselect(
 #  st.text(ingredients_list)
 # time_to_insert =st.button('Submit Order')
 # ingredients_string = ""  # Initialize ingredients_string
+ingredients_string = "" 
 if ingredients_list :
-    ingredients_string = "" 
+    # ingredients_string = "" 
  
  
     for fruit_chosen in ingredients_list: 

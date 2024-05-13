@@ -73,6 +73,8 @@
 # time_to_insert =st.button('Submit Order')
 # session.sql(my_insert_stmt).collect()
 # st.success('Your Smoothie is ordered!', icon="✅")
+
+------new  code----
 import streamlit as st
 from snowflake.snowpark.functions import col
 import requests
@@ -91,36 +93,39 @@ st.write("The name on your Smoothie will be", name_on_order)
 cnx = st.connection("snowflake")
 session = cnx.session()
 
-# Retrieve the data from Snowflake and convert it to a Pandas DataFrame
+# Retrieve the data from Snowflake
 my_dataframe = session.table("smoothies.public.fruit_options").select(col('FRUIT_NAME'), col('SEARCH_ON')).collect()
-pd_df = my_dataframe.to_pandas()
 
-# Display the DataFrame for debugging
-st.write(pd_df)
+if not my_dataframe:
+    st.error("No data found in the Snowflake table.")
+else:
+    # Convert the Snowflake DataFrame to a Pandas DataFrame
+    pd_df = my_dataframe.to_pandas()
 
-ingredients_list = st.multiselect('Choose up to 5 ingredients:', pd_df['FRUIT_NAME'].tolist())
+    ingredients_list = st.multiselect('Choose up to 5 ingredients:', pd_df['FRUIT_NAME'].tolist())
 
-ingredients_string = ""
-if ingredients_list:
-    for fruit_chosen in ingredients_list:
-        ingredients_string += fruit_chosen + ' '
-        # Find the 'SEARCH_ON' value for the selected fruit
-        search_on = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
-        st.write('The search value for ', fruit_chosen, ' is ', search_on)
+    ingredients_string = ""
+    if ingredients_list:
+        for fruit_chosen in ingredients_list:
+            ingredients_string += fruit_chosen + ' '
+            # Find the 'SEARCH_ON' value for the selected fruit
+            search_on = pd_df.loc[pd_df['FRUIT_NAME'] == fruit_chosen, 'SEARCH_ON'].iloc[0]
+            st.write('The search value for ', fruit_chosen, ' is ', search_on)
 
-        # Use the 'SEARCH_ON' value to make a request to the Fruityvice API
-        fruityvice_response = requests.get(f"https://fruityvice.com/api/fruit/{search_on}")
-        fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
+            # Use the 'SEARCH_ON' value to make a request to the Fruityvice API
+            fruityvice_response = requests.get(f"https://fruityvice.com/api/fruit/{search_on}")
+            fv_df = st.dataframe(data=fruityvice_response.json(), use_container_width=True)
 
-# Submit button
-time_to_insert = st.button('Submit Order')
+    # Submit button
+    time_to_insert = st.button('Submit Order')
 
-if time_to_insert:
-    # Insert the order into the Snowflake table
-    my_insert_stmt = """INSERT INTO smoothies.public.orders(ingredients, name_on_order)
-                        VALUES ('{}', '{}')""".format(ingredients_string, name_on_order)
-    session.sql(my_insert_stmt).collect()
-    st.success('Your Smoothie is ordered!', icon="✅")
+    if time_to_insert:
+        # Insert the order into the Snowflake table
+        my_insert_stmt = """INSERT INTO smoothies.public.orders(ingredients, name_on_order)
+                            VALUES ('{}', '{}')""".format(ingredients_string, name_on_order)
+        session.sql(my_insert_stmt).collect()
+        st.success('Your Smoothie is ordered!', icon="✅")
+
 
 
 
